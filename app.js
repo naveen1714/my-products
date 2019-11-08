@@ -1,12 +1,32 @@
-const http = require('http');
-const port = process.env.PORT || 3000
+//app.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const product = require('./routes/product.route'); // Imports routes for the products
+const app = express();
+const mongoose = require('mongoose');
+var cors = require('cors');
+const PORT = process.env.PORT || 5000
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/html');
-  res.end('<h1>Hello World</h1>');
+
+app.use(cors());
+// Set up mongoose connection
+const dbConfig = "mongodb+srv://naveen1714:Naveen@1@cluster0-ou6n9.mongodb.net/ProductDB";
+
+mongoose.Promise = global.Promise;
+
+// Connecting to the database
+mongoose.connect(dbConfig, {
+    useNewUrlParser: true
+}).then(() => {
+    console.log("Successfully connected to the database");    
+}).catch(err => {
+    console.log('Could not connect to the database. Exiting now...', err);
+    process.exit();
 });
 
-server.listen(port,() => {
-  console.log(`Server running at port `+port);
-});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
+
+
+app.use('/products', product);
+app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
