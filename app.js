@@ -5,7 +5,7 @@ const product = require('./routes/product.route'); // Imports routes for the pro
 const app = express();
 const mongoose = require('mongoose');
 var cors = require('cors');
-const PORT = process.env.PORT || 5000
+
 
 
 app.use(cors());
@@ -29,4 +29,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 
 app.use('/products', product);
-app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
+app.set( 'port', ( process.env.PORT || 5000 ));
+
+// Start node server
+app.listen( app.get( 'port' ), function() {
+  console.log( 'Node server is running on port ' + app.get( 'port' ));
+  });
